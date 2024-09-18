@@ -1,6 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import { connectDB } from "./src/config/db.js";
+import authRouter from "./src/routes/auth.routes.js";
 
 const app = express();
 
@@ -11,25 +13,13 @@ app.use(cors());
 app.use(morgan("dev"));
 
 //RUTAS
+app.use("/api", authRouter);
 app.use("/", (req, res) => {
   res.send("hola");
 });
 
-// //MANEJAR RUTAS NO EXISTENTES
-// app.use((req, res, next) => {
-//   const error = new Error("Ruta no encontrada");
-//   error.status = 400;
-//   next(error);
-// });
-
-// app.use((req, res, error, next) => {
-//   console.log("Error: ", error);s
-//   res.status(500 || error.status).json({
-//     messagE: "Error en el servidor" || error.message,
-//   });
-// });
-
 //SERVIDOR
-app.listen(3000, () => {
+app.listen(3000, async () => {
+  await connectDB();
   console.log("encendido");
 });
